@@ -144,18 +144,6 @@ public class StartPgServerMojo extends GeneralMojo {
         }
     }
 
-    private static void setServerRun() {
-        running = true;
-    }
-
-    private static void setServerStop() {
-        running = false;
-    }
-
-    public static boolean isRunning() {
-        return running;
-    }
-
     /** This method stops the server */
     public static void stopPgServer() throws IOException {
         //TODO: Perhaps, it isn't very pefrect realisation and it will be redesign
@@ -167,6 +155,18 @@ public class StartPgServerMojo extends GeneralMojo {
             embeddedPostgres = null;
             setServerStop();
         }
+    }
+
+    private static void setServerRun() {
+        running = true;
+    }
+
+    private static void setServerStop() {
+        running = false;
+    }
+
+    public static boolean isRunning() {
+        return running;
     }
 
 }
