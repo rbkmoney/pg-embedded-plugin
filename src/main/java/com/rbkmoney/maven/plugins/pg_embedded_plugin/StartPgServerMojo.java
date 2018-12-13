@@ -70,7 +70,7 @@ public class StartPgServerMojo extends GeneralMojo {
     @Override
     protected void doExecute() throws MojoExecutionException, MojoFailureException {
         if (embeddedPostgres != null) {
-            getLog().warn("The PG server is already running! [1]");
+            getLog().warn("The PG server is already running!");
         } else {
             postgresThread = new Thread(() -> {
                 try {
@@ -95,49 +95,41 @@ public class StartPgServerMojo extends GeneralMojo {
 
     /** Method starts PG server */
     private void startPgServer() throws IOException {
-        if (embeddedPostgres == null) {
-            getLog().info("The PG server is starting...");
-            EmbeddedPostgres.Builder builder = EmbeddedPostgres.builder();
-            String dbDir = prepareDbDir();
-            getLog().info("Dir for PG files: " + dbDir);
-            builder.setDataDirectory(dbDir);
-            builder.setPort(port);
-            //TODO: additional parameters should be added
-            embeddedPostgres = builder.start();
-            getLog().info("The PG server was started!");
-        } else {
-            getLog().warn("The PG server is already running! [2]");
-        }
+        getLog().info("The PG server is starting...");
+        EmbeddedPostgres.Builder builder = EmbeddedPostgres.builder();
+        String dbDir = prepareDbDir();
+        getLog().info("Dir for PG files: " + dbDir);
+        builder.setDataDirectory(dbDir);
+        builder.setPort(port);
+        //TODO: additional parameters should be added
+        embeddedPostgres = builder.start();
+        getLog().info("The PG server was started!");
     }
 
     /** The method creates a new database */
     private void createDatabase() throws SQLException {
-        if (embeddedPostgres != null) {
-            try (Connection conn = embeddedPostgres.getPostgresDatabase().getConnection()) {
-                Statement statement = conn.createStatement();
-                statement.execute("CREATE DATABASE " + dbName);
-                statement.close();
-            } catch (SQLException ex) {
-                getLog().error("An error occurred while creating the database "+ dbName);
-                throw ex;
-            }
+        try (Connection conn = embeddedPostgres.getPostgresDatabase().getConnection()) {
+            Statement statement = conn.createStatement();
+            statement.execute("CREATE DATABASE " + dbName);
+            statement.close();
+        } catch (SQLException ex) {
+            getLog().error("An error occurred while creating the database "+ dbName);
+            throw ex;
         }
     }
 
     /** The method creates a new schema in the created database */
     private void createSchemas() throws SQLException {
-        if (embeddedPostgres != null) {
-            DataSource database = embeddedPostgres.getDatabase(userName, dbName);
-            try (Connection connection = database.getConnection()) {
-                Statement statement = connection.createStatement();
-                for (String schema : schemas) {
-                    statement.execute("CREATE SCHEMA " + schema);
-                }
-                statement.close();
-            } catch (SQLException ex) {
-                getLog().error("An error occurred while creating the schemas " + schemas);
-                throw ex;
+        DataSource database = embeddedPostgres.getDatabase(userName, dbName);
+        try (Connection connection = database.getConnection()) {
+            Statement statement = connection.createStatement();
+            for (String schema : schemas) {
+                statement.execute("CREATE SCHEMA " + schema);
             }
+            statement.close();
+        } catch (SQLException ex) {
+            getLog().error("An error occurred while creating the schemas " + schemas);
+            throw ex;
         }
     }
 
