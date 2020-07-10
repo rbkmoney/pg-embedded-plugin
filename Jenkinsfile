@@ -1,5 +1,5 @@
 #!groovy
-build('pg_embedded_plugin', 'docker-host') {
+build('pg-embedded-plugin', 'docker-host') {
     checkoutRepo()
     loadBuildUtils()
 
