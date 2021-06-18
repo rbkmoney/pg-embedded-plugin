@@ -3,9 +3,9 @@
 This is a maven plugin for for starting a __embedded postgresql server__.
 By default the server starts at the initialization stage and stops at the compile stage.
 Possible values in the configuration block:
- * __dir__ (optional) - file directory of the instance (if it will be empty then files will create in a terger directory);
+ * __dbDir__ (optional, deprecated, __dir__ actual) - file directory of the instance (if it will be empty then files will create in a terger directory); 
  * __port__ (required; default 15432) - port on which the instance will be started;
- * __name__ (required) - name of database witch will be created in the instance;
+ * __dbName__ (required, deprecated, __name__ actual) - name of database witch will be created in the instance;
  * __schemas__ (required) - list of scheme witch will be created in the instance.
 
 
