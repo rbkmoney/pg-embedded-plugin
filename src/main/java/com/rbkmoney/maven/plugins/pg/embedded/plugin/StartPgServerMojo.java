@@ -17,6 +17,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Class to start the embedded server
@@ -35,6 +36,13 @@ public class StartPgServerMojo extends GeneralMojo {
     /**
      * Directory that will host the service files of postgresql
      */
+    @Deprecated
+    @Parameter
+    private String dbDir;
+
+    /**
+     * Directory that will host the service files of postgresql
+     */
     @Parameter
     private String dir;
 
@@ -48,6 +56,13 @@ public class StartPgServerMojo extends GeneralMojo {
      * Database name
      */
     @Parameter(required = true)
+    @Deprecated
+    private String dbName;
+
+    /**
+     * Database name
+     */
+    @Parameter
     private String name;
 
     /**
@@ -73,6 +88,8 @@ public class StartPgServerMojo extends GeneralMojo {
 
     @Override
     protected void doExecute() throws MojoExecutionException, MojoFailureException {
+        dir = Optional.ofNullable(dir).orElse(dbDir);
+        name = Optional.ofNullable(name).orElse(dbName);
         if (embeddedPostgres != null) {
             getLog().warn("The PG server is already running!");
         } else {
